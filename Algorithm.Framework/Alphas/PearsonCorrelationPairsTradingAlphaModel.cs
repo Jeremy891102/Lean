@@ -62,7 +62,7 @@ namespace QuantConnect.Algorithm.Framework.Alphas
 
             var history = algorithm.History(symbols, _lookback, _resolution);
 
-            var vectors = GetPriceVectors(history);
+            var vectors = GetPriceVectors(history, out var vectorSymbols);
 
             if (vectors.LongLength == 0)
             {
@@ -76,7 +76,7 @@ namespace QuantConnect.Algorithm.Framework.Alphas
                 if (maxValue >= _minimumCorrelation)
                 {
                     var maxTuple = pearsonMatrix.Find(x => x == maxValue);
-                    _bestPair = Tuple.Create(symbols[maxTuple.Item1], symbols[maxTuple.Item2]);
+                    _bestPair = Tuple.Create(vectorSymbols[maxTuple.Item1], vectorSymbols[maxTuple.Item2]);
                 }
             }
 
@@ -101,7 +101,7 @@ namespace QuantConnect.Algorithm.Framework.Alphas
             return _bestPair != null && asset1 == _bestPair.Item1 && asset2 == _bestPair.Item2;
         }
 
-        private double[][] GetPriceVectors(IEnumerable<Slice> slices)
+        private double[][] GetPriceVectors(IEnumerable<Slice> slices, out Symbol[] vectorSymbols)
         {
             var symbols = Securities.Select(x => x.Symbol).ToArray();
             var timeZones = Securities.ToDictionary(x => x.Symbol, y => y.Exchange.TimeZone);
@@ -125,11 +125,13 @@ namespace QuantConnect.Algorithm.Framework.Alphas
                     .SelectMany(x => x.Values));
             }
 
-            return bars
-                .GroupBy(x => x.Symbol)
-                .Select(x =>
+            var groupedBars = bars.ToLookup(x => x.Symbol);
+            vectorSymbols = symbols.Where(groupedBars.Contains).ToArray();
+
+            return vectorSymbols
+                .Select(symbol =>
                 {
-                    var array = x.Select(b => Math.Log((double)b.Price)).ToArray();
+                    var array = groupedBars[symbol].Select(b => Math.Log((double)b.Price)).ToArray();
                     if (array.Length > 1)
                     {
                         for (var i = array.Length - 1; i > 0; i--)
