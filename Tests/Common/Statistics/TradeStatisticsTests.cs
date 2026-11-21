@@ -15,6 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using QuantConnect.Statistics;
 
@@ -25,6 +28,84 @@ namespace QuantConnect.Tests.Common.Statistics
     {
         private const decimal TradeFee = 2;
         private readonly DateTime _startTime = new DateTime(2015, 08, 06, 15, 30, 0);
+
+        [TestCase("0")]
+        [TestCase("0.000025")]
+        [TestCase("-0.000025")]
+        [TestCase("0.00025")]
+        [TestCase("0.1234567890123456789012345678")]
+        [TestCase("12345678901234567890.12345678")]
+        public void MonetaryStatisticsRetainPrecisionInJson(string amount)
+        {
+            var value = decimal.Parse(amount, CultureInfo.InvariantCulture);
+            var properties = new[]
+            {
+                nameof(TradeStatistics.TotalProfitLoss),
+                nameof(TradeStatistics.TotalProfit),
+                nameof(TradeStatistics.TotalLoss),
+                nameof(TradeStatistics.LargestProfit),
+                nameof(TradeStatistics.LargestLoss),
+                nameof(TradeStatistics.AverageProfitLoss),
+                nameof(TradeStatistics.AverageProfit),
+                nameof(TradeStatistics.AverageLoss),
+                nameof(TradeStatistics.AverageMAE),
+                nameof(TradeStatistics.AverageMFE),
+                nameof(TradeStatistics.LargestMAE),
+                nameof(TradeStatistics.LargestMFE),
+                nameof(TradeStatistics.MaximumClosedTradeDrawdown),
+                nameof(TradeStatistics.MaximumIntraTradeDrawdown),
+                nameof(TradeStatistics.ProfitLossStandardDeviation),
+                nameof(TradeStatistics.ProfitLossDownsideDeviation),
+                nameof(TradeStatistics.MaximumEndTradeDrawdown),
+                nameof(TradeStatistics.AverageEndTradeDrawdown),
+                nameof(TradeStatistics.TotalFees)
+            };
+            var statistics = new TradeStatistics();
+            foreach (var name in properties)
+            {
+                typeof(TradeStatistics).GetProperty(name).SetValue(statistics, value);
+            }
+
+            var json = JsonConvert.SerializeObject(statistics);
+            var tokens = JObject.Parse(json);
+            var restored = JsonConvert.DeserializeObject<TradeStatistics>(json);
+            Assert.Multiple(() =>
+            {
+                foreach (var name in properties)
+                {
+                    Assert.AreEqual(JTokenType.String, tokens[name].Type, name);
+                    Assert.AreEqual(value, decimal.Parse((string)tokens[name], CultureInfo.InvariantCulture), name);
+                    Assert.AreEqual(value, typeof(TradeStatistics).GetProperty(name).GetValue(restored), name);
+                }
+            });
+        }
+
+        [Test]
+        public void RatioStatisticsKeepExistingJsonRounding()
+        {
+            var properties = new[]
+            {
+                nameof(TradeStatistics.ProfitLossRatio),
+                nameof(TradeStatistics.WinLossRatio),
+                nameof(TradeStatistics.WinRate),
+                nameof(TradeStatistics.LossRate),
+                nameof(TradeStatistics.ProfitFactor),
+                nameof(TradeStatistics.SharpeRatio),
+                nameof(TradeStatistics.SortinoRatio),
+                nameof(TradeStatistics.ProfitToMaxDrawdownRatio)
+            };
+            var statistics = new TradeStatistics();
+            foreach (var name in properties)
+            {
+                typeof(TradeStatistics).GetProperty(name).SetValue(statistics, 0.123456m);
+            }
+            var tokens = JObject.Parse(JsonConvert.SerializeObject(statistics));
+            foreach (var name in properties)
+            {
+                Assert.AreEqual(JTokenType.String, tokens[name].Type, name);
+                Assert.AreEqual("0.1235", (string)tokens[name], name);
+            }
+        }
 
         [Test]
         public void NoTrades()

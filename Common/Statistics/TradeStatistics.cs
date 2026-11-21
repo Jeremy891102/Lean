@@ -53,49 +53,49 @@ namespace QuantConnect.Statistics
         /// <summary>
         /// The total profit/loss for all trades (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal TotalProfitLoss { get; set; }
 
         /// <summary>
         /// The total profit for all winning trades (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal TotalProfit { get; set; }
 
         /// <summary>
         /// The total loss for all losing trades (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal TotalLoss { get; set; }
 
         /// <summary>
         /// The largest profit in a single trade (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal LargestProfit { get; set; }
 
         /// <summary>
         /// The largest loss in a single trade (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal LargestLoss { get; set; }
 
         /// <summary>
         /// The average profit/loss (a.k.a. Expectancy or Average Trade) for all trades (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal AverageProfitLoss { get; set; }
 
         /// <summary>
         /// The average profit for all winning trades (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal AverageProfit { get; set; }
 
         /// <summary>
         /// The average loss for all winning trades (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal AverageLoss { get; set; }
 
         /// <summary>
@@ -170,52 +170,52 @@ namespace QuantConnect.Statistics
         /// <summary>
         /// The average Maximum Adverse Excursion for all trades
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal AverageMAE { get; set; }
 
         /// <summary>
         /// The average Maximum Favorable Excursion for all trades
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal AverageMFE { get; set; }
 
         /// <summary>
         /// The largest Maximum Adverse Excursion in a single trade (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal LargestMAE { get; set; }
 
         /// <summary>
         /// The largest Maximum Favorable Excursion in a single trade (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal LargestMFE { get; set; }
 
         /// <summary>
         /// The maximum closed-trade drawdown for all trades (as symbol currency)
         /// </summary>
         /// <remarks>The calculation only takes into account the profit/loss of each trade</remarks>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal MaximumClosedTradeDrawdown { get; set; }
 
         /// <summary>
         /// The maximum intra-trade drawdown for all trades (as symbol currency)
         /// </summary>
         /// <remarks>The calculation takes into account MAE and MFE of each trade</remarks>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal MaximumIntraTradeDrawdown { get; set; }
 
         /// <summary>
         /// The standard deviation of the profits/losses for all trades (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal ProfitLossStandardDeviation { get; set; }
 
         /// <summary>
         /// The downside deviation of the profits/losses for all trades (as symbol currency)
         /// </summary>
         /// <remarks>This metric only considers deviations of losing trades</remarks>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal ProfitLossDownsideDeviation { get; set; }
 
         /// <summary>
@@ -249,13 +249,13 @@ namespace QuantConnect.Statistics
         /// <summary>
         /// The maximum amount of profit given back by a single trade before exit (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal MaximumEndTradeDrawdown { get; set; }
 
         /// <summary>
         /// The average amount of profit given back by all trades before exit (as symbol currency)
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal AverageEndTradeDrawdown { get; set; }
 
         /// <summary>
@@ -266,7 +266,7 @@ namespace QuantConnect.Statistics
         /// <summary>
         /// The sum of fees for all trades
         /// </summary>
-        [JsonConverter(typeof(JsonRoundingConverter))]
+        [JsonConverter(typeof(StringDecimalJsonConverter), false)]
         public decimal TotalFees { get; set; }
 
         /// <summary>
