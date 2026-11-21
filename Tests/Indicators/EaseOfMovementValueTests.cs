@@ -53,6 +53,30 @@ namespace QuantConnect.Tests.Indicators
             }
         }
 
+        [TestCase(20, 20, 10000, 1)]
+        [TestCase(19, 21, 0, 1)]
+        [TestCase(20, 20, 10000, 2)]
+        [TestCase(19, 21, 0, 2)]
+        public void UpdatesPreviousBarWhenMovementCannotBeCalculated(int low, int high, int volume, int skippedBars)
+        {
+            var indicator = new EaseOfMovementValue(period: 1, scale: 10000);
+            var time = new DateTime(2024, 1, 2, 9, 30, 0);
+            indicator.Update(new TradeBar(time, Symbols.SPY, 9, 10, 8, 9, 10000, TimeSpan.FromMinutes(1)));
+
+            for (var i = 1; i <= skippedBars; i++)
+            {
+                indicator.Update(new TradeBar(time.AddMinutes(i), Symbols.SPY, 20, high, low, 20, volume, TimeSpan.FromMinutes(1)));
+                Assert.AreEqual(0, indicator.Current.Value);
+            }
+
+            indicator.Update(new TradeBar(time.AddMinutes(skippedBars + 1), Symbols.SPY, 21, 22, 20, 21, 10000, TimeSpan.FromMinutes(1)));
+            Assert.AreEqual(2m, indicator.Current.Value);
+
+            indicator.Reset();
+            indicator.Update(new TradeBar(time.AddMinutes(skippedBars + 2), Symbols.SPY, 21, 22, 20, 21, 10000, TimeSpan.FromMinutes(1)));
+            Assert.AreEqual(0m, indicator.Current.Value);
+        }
+
         protected override Action<IndicatorBase<TradeBar>, double> Assertion
         {
             get { return (indicator, expected) => Assert.AreEqual(expected, (double)indicator.Current.Value, 1); }

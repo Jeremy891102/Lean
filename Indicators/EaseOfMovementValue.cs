@@ -77,17 +77,17 @@ namespace QuantConnect.Indicators
                 _previousLowMinimum = input.Low;
             }
 
+            var midValue = ((input.High + input.Low) / 2) - ((_previousHighMaximum + _previousLowMinimum) / 2);
+            _previousHighMaximum = input.High;
+            _previousLowMinimum = input.Low;
+
             if (input.Volume == 0 || input.High == input.Low)
             {
                 _sma.Update(input.EndTime, 0);
                 return _sma.Current.Value;
             }
 
-            var midValue = ((input.High + input.Low) / 2) - ((_previousHighMaximum + _previousLowMinimum) / 2);
             var midRatio = ((input.Volume / _scale) / (input.High - input.Low));
-
-            _previousHighMaximum = input.High;
-            _previousLowMinimum = input.Low;
 
             _sma.Update(input.EndTime, midValue / midRatio);
 
