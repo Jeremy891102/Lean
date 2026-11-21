@@ -67,7 +67,7 @@ class PearsonCorrelationPairsTradingAlphaModel(BasePairsTradingAlphaModel):
                         corr[(i, j)] = pearsonr(df.iloc[:,i], df.iloc[:,j])[0]
 
             corr = sorted(corr.items(), key = lambda kv: kv[1])
-            if corr[-1][1] >= self.minimum_correlation:
+            if corr and corr[-1][1] >= self.minimum_correlation:
                 self.best_pair = (symbols[corr[-1][0][0]], symbols[corr[-1][0][1]])
 
         super().on_securities_changed(algorithm, changes)
@@ -80,7 +80,7 @@ class PearsonCorrelationPairsTradingAlphaModel(BasePairsTradingAlphaModel):
             asset2: The second asset's symbol in the pair
         Returns:
             True if the statistical test for the pair is successful'''
-        return self.best_pair is not None and self.best_pair[0] == asset1 and self.best_pair[1] == asset2
+        return bool(self.best_pair) and self.best_pair[0] == asset1 and self.best_pair[1] == asset2
 
     def get_price_dataframe(self, df):
         timezones = { x.symbol.value: x.exchange.time_zone for x in self.securities }

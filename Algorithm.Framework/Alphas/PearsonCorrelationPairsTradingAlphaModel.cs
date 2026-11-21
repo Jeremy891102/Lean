@@ -64,7 +64,7 @@ namespace QuantConnect.Algorithm.Framework.Alphas
 
             var vectors = GetPriceVectors(history);
 
-            if (vectors.LongLength == 0)
+            if (vectors.LongLength < 2)
             {
                 algorithm.Debug($"PearsonCorrelationPairsTradingAlphaModel.OnSecuritiesChanged(): The requested historical data does not have series of prices with the same date/time. Please consider increasing the lookback period. Current lookback: {_lookback}");
             }
